@@ -34,6 +34,6 @@ jobs:
             echo $payload
             curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/somerepo/actions/workflows/report-daily-results.yml/dispatches \
+            https://api.github.com/repos/somerepo/actions/workflows/report/dispatches \
             -d $payload
         shell: bash
