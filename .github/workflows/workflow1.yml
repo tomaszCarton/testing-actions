@@ -1,0 +1,40 @@
+name: Run Workflow
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: string
+        description: Test against
+        required: true
+
+jobs:
+  lint:
+    name: Job1
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Notify runner
+        run: | 
+            conclusion="${{ inputs.environment }}"
+            uppercase_conclusion=$(echo "$conclusion" | tr '[:lower:]' '[:upper:]')
+            echo $uppercase_conclusion
+            build_number=${{ github.run_number }}
+            repository_url=${{github.repositoryUrl}}
+            run_id=${{github.run_id}}
+            payload="{
+                \"event_type\": \"test-result\",
+                \"client_payload\": {
+                    \"result\": \" ${uppercase_conclusion}\",
+                    \"html_url\": \"${repository_url}/actions/${run_id}\",
+                    \"build_number\": ${build_number}
+                }
+            }"
+
+            curl -X POST \
+            -H "Authorization: token ***" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/somerepo/actions/workflows/report-daily-results.yml/dispatches \
+            -d ${payload}
+        shell: bash
