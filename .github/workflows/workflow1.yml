@@ -31,10 +31,10 @@ jobs:
                     \"build_number\": ${build_number}
                 }
             }"
-
+            echo $payload
             curl -X POST \
             -H "Authorization: token ***" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/somerepo/actions/workflows/report-daily-results.yml/dispatches \
-            -d ${payload}
+            -d $payload
         shell: bash
